@@ -4,15 +4,19 @@
 <h2>Tạo bài viết</h2>
 <x-alert type="warning" title="Lưu ý">Dữ liệu hiện chỉ mô phỏng (chưa lưu
     DB).</x-alert>
-<form action="{{ route('articles.store') }}" method="post">
-    @csrf
-    <x-input name="title" label="Tiêu đề" />
-    <label style="display:block;margin:8px 0 4px">Nội dung</label>
-    <textarea name="body" rows="6" style="width:100%;padding:8px;border:1px
-solid #e5e7eb;border-radius:6px">{{ old('body') }}</textarea>
-    @error('body')
-    <div style="color:#991B1B;margin-top:4px">{{ $message }}</div>
-    @enderror
-    <button type="submit" style="margin-top:10px">Lưu</button>
+<form action="{{ route('articles.store') }}" method="post"
+enctype="multipart/form-data">
+@csrf
+<label>Tiêu đề</label>
+<input type="text" name="title" value="{{ old('title') }}">
+@error('title') <div style="color:#b91c1c">{{ $message }}</div> @enderror
+<label>Nội dung</label>
+<textarea name="body" rows="6">{{ old('body') }}</textarea>
+@error('body') <div style="color:#b91c1c">{{ $message }}</div> @enderror
+<label>Ảnh minh hoạ (tuỳ chọn)</label>
+<input type="file" name="image" accept=".jpg,.jpeg,.png">
+@error('image') <div style="color:#b91c1c">{{ $message }}</div> @enderror
+<button type="submit">Lưu</button>
+
 </form>
 @endsection

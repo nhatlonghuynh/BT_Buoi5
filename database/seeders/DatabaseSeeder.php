@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,
             ArticleSeeder::class,
         ]);
+        $this->call(DemoUserSeeder::class);
 
         // User::factory()->create([
         //     'name' => 'Test User',

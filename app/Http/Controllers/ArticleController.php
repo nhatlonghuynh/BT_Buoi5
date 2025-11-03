@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreArticleRequest;
 
 class ArticleController extends Controller
 {
     /**
+     * 
      * Display a listing of the resource.
      */
+    use AuthorizesRequests;
     public function index()
     {
         //
@@ -33,16 +36,18 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request)
     {
-        //
-        $validate = $request->validate(
-            [
-                'title' => ['required', 'string', 'max:255'],
-                'body' => ['required', 'string', 'min:10'],
-            ]
-        );
-        return redirect()->route('articles.index')->with('sucess', 'Tao bai viet thanh cong (demo).');
+        $data = $request->validated();
+        // Xử lý ảnh (nếu có)
+        if ($request->hasFile('image')) {
+            // Lưu vào disk 'public' (đường dẫn: storage/app/public/articles/...)
+            $path = $request->file('image')->store('articles', 'public');
+            $data['image_path'] = $path; // lưu đường dẫn tương đối
+        }
+        Article::create($data);
+        return redirect()->route('articles.index')
+            ->with('success', 'Tạo bài viết thành công');
     }
 
     /**
@@ -81,6 +86,7 @@ class ArticleController extends Controller
         return redirect()->route('articles.index')
             ->with('success', "Cập nhật bài viết #$id thành công (demo).");
     }
+
 
     /**
      * Remove the specified resource from storage.
